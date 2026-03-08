@@ -493,7 +493,7 @@ def tab_overview(df_f, df_all, d_from, d_to, channels, gran):
             ))
         _lay(fig, "💰 Чистая выручка по каналам, ₽")
         fig.update_layout(xaxis_tickangle=-45)
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
 
     # Avg price per channel
     with c2:
@@ -507,7 +507,7 @@ def tab_overview(df_f, df_all, d_from, d_to, channels, gran):
             ))
         _lay(fig2, "📏 Средняя стоимость подписки по каналам, ₽")
         fig2.update_layout(xaxis_tickangle=-45)
-        st.plotly_chart(fig2, width='stretch')
+        st.plotly_chart(fig2, use_container_width=True)
 
     c3, c4 = st.columns(2)
 
@@ -521,7 +521,7 @@ def tab_overview(df_f, df_all, d_from, d_to, channels, gran):
                                   marker_color=CH_COLOR.get(ch, C1)))
         _lay(fig3, "👥 Активных подписчиков по периодам")
         fig3.update_layout(barmode="group", xaxis_tickangle=-45)
-        st.plotly_chart(fig3, width='stretch')
+        st.plotly_chart(fig3, use_container_width=True)
 
     # Revenue share pie
     with c4:
@@ -534,7 +534,7 @@ def tab_overview(df_f, df_all, d_from, d_to, channels, gran):
         ))
         _lay(fig4, "📊 Доля выручки по каналам")
         fig4.update_traces(textfont=dict(color=TEXT))
-        st.plotly_chart(fig4, width='stretch')
+        st.plotly_chart(fig4, use_container_width=True)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -566,7 +566,7 @@ def tab_subscribers(df_all, channels):
                                        marker_color=CH_COLOR.get(ch, C1), opacity=0.75))
         _lay(fig, "🔢 Периодов подписки на человека (разы подписки)")
         fig.update_layout(barmode="overlay", xaxis_title="Периодов", yaxis_title="Чел.")
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
 
     # Metric 8: avg renewals per channel
     with c2:
@@ -584,7 +584,7 @@ def tab_subscribers(df_all, channels):
             ))
         _lay(fig2, "📅 Среднее число продлений (месяцев) по каналам")
         fig2.update_layout(barmode="group")
-        st.plotly_chart(fig2, width='stretch')
+        st.plotly_chart(fig2, use_container_width=True)
 
     # Автопродление:
     # Формула: последний платёж = Recurrent payment  И  Follower Status = enabled
@@ -625,9 +625,9 @@ def tab_ltv_retention(df_all, channels):
             ))
         _lay(fig, f"💎 LTV по каналам (индексация {int(ANNUAL_RATE*100)}% годовых), ₽")
         fig.update_layout(barmode="group")
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
         with st.expander("Детали расчёта LTV"):
-            st.dataframe(ltv_df, hide_index=True, width='stretch')
+            st.dataframe(ltv_df, hide_index=True, use_container_width=True)
 
     with c2:
         churn_df = compute_monthly_churn(df_all, channels)
@@ -640,7 +640,7 @@ def tab_ltv_retention(df_all, channels):
             ))
         _lay(fig2, "📉 Churn Rate по месяцам, %")
         fig2.update_layout(xaxis_tickangle=-45)
-        st.plotly_chart(fig2, width='stretch')
+        st.plotly_chart(fig2, use_container_width=True)
 
     st.divider()
 
@@ -666,7 +666,7 @@ def tab_ltv_retention(df_all, channels):
                 textfont=dict(size=9, color=TEXT),
             ))
             _lay(fig_r, f"Retention — {ch}", height=320)
-            st.plotly_chart(fig_r, width='stretch')
+            st.plotly_chart(fig_r, use_container_width=True)
 
     st.divider()
 
@@ -713,7 +713,7 @@ def tab_ltv_retention(df_all, channels):
                 _lay(fig_v, f"Винтаж оттока{title_suffix}", height=320)
                 fig_v.update_xaxes(title="Месяц жизни")
                 fig_v.update_yaxes(title="% ушедших (накопл.)", range=[0, 105])
-                st.plotly_chart(fig_v, width='stretch')
+                st.plotly_chart(fig_v, use_container_width=True)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -735,8 +735,8 @@ def tab_churn(df_all, channels):
         ))
         _lay(fig, f"↩️ Вернулись на тот же канал, % (на {last_date})")
         fig.update_yaxes(range=[0, 105], title="%")
-        st.plotly_chart(fig, width='stretch')
-        st.dataframe(rs, hide_index=True, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
+        st.dataframe(rs, hide_index=True, use_container_width=True)
 
     # Monthly new vs churned bars
     with c2:
@@ -752,7 +752,7 @@ def tab_churn(df_all, channels):
         _lay(fig2, "📊 Новые vs Ушедшие по месяцам")
         fig2.update_layout(barmode="relative", xaxis_tickangle=-45)
         fig2.add_hline(y=0, line_color=MUTED, line_width=1)
-        st.plotly_chart(fig2, width='stretch')
+        st.plotly_chart(fig2, use_container_width=True)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -854,7 +854,7 @@ def tab_promos(df_all, channels):
                      text="Подписчиков")
         fig.update_traces(textposition="outside")
         _lay(fig, "🎁 Подписчики по цене первого платежа (акции)")
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
 
     # Конверсия в продление (2-й платёж ≤45 дней после первого)
     with c2:
@@ -881,7 +881,7 @@ def tab_promos(df_all, channels):
         _lay(fig2, "📈 Конверсия в продление (2-й платёж ≤45 дней после первого)")
         fig2.update_layout(barmode="group")
         fig2.update_yaxes(range=[0, 115], title="%")
-        st.plotly_chart(fig2, width='stretch')
+        st.plotly_chart(fig2, use_container_width=True)
 
     st.markdown("---")
     st.markdown("### 📋 Детальная таблица по акциям")
@@ -895,7 +895,7 @@ def tab_promos(df_all, channels):
         .rename(columns={"Promo_Label": "Цена входа", "Ср_платежей": "Ср. месяцев"})
     )
     summary["Ср. месяцев"] = summary["Ср. месяцев"].round(1)
-    st.dataframe(summary, hide_index=True, width='stretch')
+    st.dataframe(summary, hide_index=True, use_container_width=True)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -933,7 +933,7 @@ def show_overlap(df_all):
         showscale=False,
     ))
     _lay(fig, "Матрица пересечений (кол-во уникальных подписчиков)", height=280)
-    st.plotly_chart(fig, width='stretch')
+    st.plotly_chart(fig, use_container_width=True)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -947,38 +947,21 @@ def main():
     st.markdown(f"<p style='color:{MUTED}; margin-top:4px'>Аналитика платных каналов</p>",
                 unsafe_allow_html=True)
 
-    # ── Загрузка данных из ../data/ ───────────────────────────────────────────
-    raw = _load_data_dir()
-
     with st.sidebar:
         st.markdown("## 📁 Данные")
-        if raw is not None:
-            files_found = sorted(
-                [p.name for ext in ("*.xlsx", "*.xls", "*.csv")
-                 for p in _DATA_DIR.glob(ext)]
-            )
-            st.success(f"✅ Загружено файлов: **{len(files_found)}**")
-            for fname in files_found:
-                st.caption(f"• `{fname}`")
-            st.caption(f"Строк после дедупликации: **{len(raw):,}**".replace(",", " "))
-            if st.button("🔄 Обновить данные"):
-                st.cache_data.clear()
-                st.rerun()
-        else:
-            st.warning(
-                f"Папка `{_DATA_DIR}` не найдена или пуста.\n\n"
-                "Структура проекта:\n```\nproject/\n  app/app.py\n  data/my_data.xlsx\n```"
-            )
+        uploaded = st.file_uploader("Excel / CSV", type=["xlsx", "csv"])
 
-    if raw is None:
-        df_all = prepare(make_demo())
-        st.info("⚡ Отображаются демо-данные. Положи файлы в папку `../data/` и перезапусти.")
-    else:
+    if uploaded:
         try:
+            raw = pd.read_excel(uploaded) if uploaded.name.endswith((".xlsx", ".xls")) \
+                  else pd.read_csv(uploaded, sep=None, engine="python")
             df_all = prepare(raw)
         except Exception as e:
-            st.error(f"Ошибка при обработке данных: {e}")
+            st.error(f"Ошибка загрузки файла: {e}")
             return
+    else:
+        df_all = prepare(make_demo())
+        st.info("⚡ Отображаются демо-данные. Загрузи свой файл в боковой панели слева.")
 
     # ── Step 2: sidebar filters (now df_all always has Datetime)
     d_from, d_to, gran, channels = render_sidebar(df_all)
