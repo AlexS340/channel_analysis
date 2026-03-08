@@ -949,9 +949,14 @@ def main():
 
     with st.sidebar:
         st.markdown("## 📁 Данные")
-        uploaded = st.file_uploader("Excel / CSV", type=["xlsx", "csv"])
+        uploaded = st.file_uploader("Загрузить другой файл (Excel / CSV)", type=["xlsx", "csv"])
+
+    # Автоматически читаем файл из папки data/ рядом с app.py
+    import pathlib
+    _DATA_DIR = pathlib.Path(__file__).parent.parent / "data"
 
     if uploaded:
+        # Если пользователь загрузил файл вручную — используем его
         try:
             raw = pd.read_excel(uploaded) if uploaded.name.endswith((".xlsx", ".xls")) \
                   else pd.read_csv(uploaded, sep=None, engine="python")
@@ -960,8 +965,24 @@ def main():
             st.error(f"Ошибка загрузки файла: {e}")
             return
     else:
-        df_all = prepare(make_demo())
-        st.info("⚡ Отображаются демо-данные. Загрузи свой файл в боковой панели слева.")
+        # Иначе ищем файл в папке data/
+        data_files = list(_DATA_DIR.glob("*.xlsx")) + list(_DATA_DIR.glob("*.xls")) + list(_DATA_DIR.glob("*.csv"))
+        if data_files:
+            try:
+                raw = pd.concat([
+                    pd.read_excel(f) if f.suffix in (".xlsx", ".xls") else pd.read_csv(f, sep=None, engine="python")
+                    for f in data_files
+                ], ignore_index=True)
+                df_all = prepare(raw)
+                with st.sidebar:
+                    st.success(f"✅ Файл загружен: **{data_files[0].name}**")
+                    st.caption(f"Строк: **{len(raw):,}**".replace(",", " "))
+            except Exception as e:
+                st.error(f"Ошибка при чтении данных: {e}")
+                return
+        else:
+            df_all = prepare(make_demo())
+            st.info("⚡ Отображаются демо-данные. Файл не найден в папке `data/`.")
 
     # ── Step 2: sidebar filters (now df_all always has Datetime)
     d_from, d_to, gran, channels = render_sidebar(df_all)
